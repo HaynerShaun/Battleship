@@ -1,148 +1,132 @@
-public class Ship
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
+public class Ship extends JLabel
 {
-    private String shipColor;
-    private int shipLength, vStart = 0, hStart = 0;
-    private int hitCount = 0;
-    private String direction = "";
-    private String shipName;
-    private int[][] shipCords;
-    private boolean sunk = false;
-    private int[][] hitLocations;
-    
-    public Ship(String shipColor, String shipName, int shipLength)
+	private String name;
+	private String ext = ".png";
+	
+	private char orientation;
+	private char h = 'H';
+	private char v = 'V';
+	
+	private int width, height;
+	private int xCord, yCord;
+	private int player;
+	private int shipNumber;
+	private int size;
+	private int hitsTaken;
+
+	private ImageIcon hit = new ImageIcon("hit.png");
+	private ImageIcon ship;
+	
+    public Ship(int shipNumber, String name, char orientation, int player, int width, int height, int xCord, int yCord, int size)
     {
-        this.shipColor = shipColor;
-        this.shipName = shipName;
-        this.shipLength = shipLength;
-        shipCords = new int[2][shipLength];
-        hitLocations = new int[2][shipLength];
-        for (int x = 0; x < shipLength; x++)
-        {
-            hitLocations[0][x] = -1;
-            hitLocations[1][x] = -1;
-        }
+        this.shipNumber = shipNumber;
+        this.name = name;
+        this.orientation = orientation;
+        this.player = player;
+        this.width = width;
+        this.height = height;
+        this.xCord = (xCord / 20) * 20 + 1;
+        this.yCord = (yCord / 20) * 20 + 1;
+        ship = new ImageIcon(name + orientation + ext);
+        super.setIcon(ship);
+        this.size = size;
+        hitsTaken = 0;
     }
     
-    public String getShipColor()
-    {
-        return shipColor;
-    }
-    public String getShipName()
-    {
-        return shipName;
-    }
-    public int getShipLength()
-    {
-        return shipLength;
-    }
-    public int getHitCount()
-    {
-        return hitCount;
-    }
-    public String getDirection()
-    {
-        return direction;
-    }
-    public int getVStart()
-    {
-        return vStart;
-    }
-    public int getHStart()
-    {
-        return hStart;
-    }
-    public int[][] getShipCords()
-    {
-        return shipCords;
-    }
-    public int[][] getHitLocations()
-    {
-        return hitLocations;
-    }
-    public boolean getSunk()
-    {
-        return sunk;
+    public boolean sunk(){
+    	boolean check = false;
+    	
+    	if(hitsTaken >= size)
+    		check = true;
+    	
+    	return check;
     }
     
-    public void setShipColor(String shipColor)
-    {
-        this.shipColor = shipColor;
-    }
-    public void setShipName(String shipName)
-    {
-        this.shipName = shipName;
-    }
-    public void setShipLength(int shipLength)
-    {
-        this.shipLength = shipLength;
-    }
-    public void setDirection(char direction)
-    {
-        this.direction = (direction == 'H' ? "Horrizontal" : "Vertical");
-    }
-    public void setVStart(int vStart)
-    {
-        this.vStart = vStart;
-    }
-    public void setHStart(int hStart)
-    {
-        this.hStart = hStart;
-    }
-    public void setShipCoords()
-    {
-        for (int x = 0; x < getShipLength(); x++)
-        {
-            if(getDirection().equals("Horrizontal"))
-            {
-                shipCords[0][x] = getVStart();
-                shipCords[1][x] = getHStart() + x;
-            }
-            else
-            {
-                shipCords[0][x] = getVStart() + x;
-                shipCords[1][x] = getHStart();
-            }
-        }
-    }
-    public void setHitLocations(int vLocation, int hLocation)
-    {
-        for (int x = 0; x < getShipLength(); x++)
-        {
-            if(hitLocations[0][x] == -1)
-            {
-                hitLocations[0][x] = vLocation;
-                hitLocations[1][x] = hLocation;
-                break;
-            }
-        }
-    }
-    public void setSunk(boolean sunk)
-    {
-        this.sunk = sunk;
+    public String getName(){
+    	return name;
     }
     
-    public void hitIncrement()
-    {
-        hitCount++;
+    public int getShipNumber(){
+    	return shipNumber;
     }
     
-    public String toString()
-    {
-        String description = ("Ship color: " + getShipColor() + 
-                              "\nShip Length: " + getShipLength() +
-                              "\nShip Direction: " + getDirection() +
-                              "\nStarting Coordinates: (" + getVStart() + "," + getHStart() + ")" +
-                              "\nHit Count: " + getHitCount() + "\nShip cords: ");
-        for (int x = 0; x < getShipLength(); x++)
-        {
-            description += "(" + shipCords[0][x] + "," + shipCords[1][x] + ") ";
-        }
-        description += "\n" + "Hit Location: ";
-        for (int x = 0; x < getShipLength(); x++)
-        {
-            description += "(" + hitLocations[0][x] + "," + hitLocations[1][x] + ") ";
-        }
-        description += "\n" + (getSunk() ? "This ship has been sunk" : "This ship hasn't been sunk") + "\n";
-        return description;
+    public int getPlayer(){
+    	return player;
+    }
+    
+    public void hit(){
+    	hitsTaken++;
+    }
+    
+    private ImageIcon getImage(){
+    	return ship;
+    }
+    
+    private void setImage(ImageIcon ship){
+        this.ship = ship;
+        super.setIcon(this.ship);
+    }
+
+    private void setWidth(int width){
+    	this.width = width;
+    }
+
+    private void setHeight(int height){
+    	this.height = height;
+    }
+
+    public void setXCord(int xCord){
+    	this.xCord = (xCord / 20) * 20;
+    }
+
+    public void setYCord(int yCord){
+    	this.yCord = (yCord / 20) * 20;;
+    }
+    
+    public int returnWidth(){
+    	return width;
+    }
+    
+    public int returnHeight(){
+    	return height;
+    }
+    
+    public int returnXCord(){
+    	return xCord;
+    }
+    
+    public int returnYCord(){
+    	return yCord;
+    }
+    
+    public boolean checkBounds(int x, int y){
+    	boolean result = false;
+    	//System.out.print("xCord: " + xCord + " - x: " +  x + " - xCord + width: ");
+    	//System.out.println(xCord + width);
+    	//System.out.print("yCord: " + yCord + " - y: " +  y + " - yCord + height: ");
+    	//System.out.println(yCord + height);
+    	if(xCord < x && x < xCord + width && yCord < y && y < yCord + height){
+    		result = true;
+    	}
+    	//System.out.println("result: " + result);
+    	
+    	return result;
+    }
+    
+    public void changeOrientation(){
+    	if(orientation == h){
+    		orientation = v;
+    	}else{
+    		orientation = h;
+    	}
+    	ship = new ImageIcon(name + orientation + ext);
+        super.setIcon(ship);
+        int temp;
+        temp = width;
+        width = height;
+        height = temp;
     }
 }
