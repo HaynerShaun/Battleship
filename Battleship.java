@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Battleship extends JFrame{
 	private JLabel boardOne = new JLabel();
@@ -39,11 +40,7 @@ public class Battleship extends JFrame{
 
 	private Ship[] ships;
 
-	private int player1shotCount;
-	private int player2shotCount;
-	private int player1sunkBoats;
-	private int player2sunkBoats;
-	private int count = 0;
+	private int player1shotCount,player2shotCount,player1sunkBoats,player2sunkBoats,count = 0;
 
 	public Battleship(){
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,7 +100,7 @@ public class Battleship extends JFrame{
 		}
 	}
 
-	private class board1Ship implements MouseListener, MouseMotionListener{
+	private class board1Ship implements MouseListener{
 		public void mouseClicked(MouseEvent e){
 			if(e.getButton() == 3){
 				for(int x = 0; x < ships.length; x++){
@@ -121,15 +118,8 @@ public class Battleship extends JFrame{
 		public void mouseReleased(MouseEvent e){e.consume();}
 		public void mouseEntered(MouseEvent e){e.consume();}
 		public void mouseExited(MouseEvent e){e.consume();}
-
-		public void mouseMoved(MouseEvent e){e.consume();}
-
-		public void mouseDragged(MouseEvent e){
-			System.out.println("Mouse is dragged to Location:"+e.getX()+","+e.getY());
-			e.consume();
-		}
 	}
-	
+
 	private class board1Attack implements MouseListener{
 		public void mouseClicked(MouseEvent e){
 			if(e.getButton() == 1){
@@ -255,7 +245,7 @@ public class Battleship extends JFrame{
 				JOptionPane.showMessageDialog(null,"Player 1 wins\nGame Over");
 				System.exit(0);
 			}
-			
+
 			if(count  == 0){
 				boardOne.addMouseListener(p1ShipHandler);
 				doneTurn.setVisible(false);
@@ -282,7 +272,20 @@ public class Battleship extends JFrame{
 			count++;
 		}
 	}
+
 	private void startGame(){
+		Random ranNum = new Random();
+		String[] shipNames = {"aircraftCarrier","battleship","destroyer","submarine","patrolBoat","aircraftCarrier","battleship","destroyer","submarine","patrolBoat"};
+		int[] shipPlayer = {1,1,1,1,1,2,2,2,2,2};
+		int[] shipWidth = {aircraftCarrierH.getIconWidth(), battleshipH.getIconWidth(),destroyerH.getIconWidth(),
+				submarineH.getIconWidth(),patrolBoatH.getIconWidth(),aircraftCarrierH.getIconWidth(), battleshipH.getIconWidth(),
+				destroyerH.getIconWidth(),submarineH.getIconWidth(),patrolBoatH.getIconWidth()};
+		int[] shipHeight = {aircraftCarrierH.getIconHeight(), battleshipH.getIconHeight(),destroyerH.getIconHeight(),
+				submarineH.getIconHeight(),patrolBoatH.getIconHeight(),aircraftCarrierH.getIconHeight(), battleshipH.getIconHeight(),
+				destroyerH.getIconHeight(),submarineH.getIconHeight(),patrolBoatH.getIconHeight()};
+		int[] shipSize = {5,4,3,3,2,5,4,3,3,2};
+		int ranX = 0, ranY = 0;
+
 		newGame.setVisible(false);
 		doneTurn.setVisible(true);
 		p1shipLabel.setVisible(true);
@@ -297,16 +300,17 @@ public class Battleship extends JFrame{
 		p2shipLabel.setText("Player 2 ships sunk: " + player2sunkBoats);
 
 		ships = new Ship[10];
-		ships[0] = new Ship(0, "aircraftCarrier", 'H', 1, aircraftCarrierH.getIconWidth(), aircraftCarrierH.getIconHeight(), 50, 50, 5);
-		ships[1] = new Ship(1, "battleship", 'H', 1, battleshipH.getIconWidth(), battleshipH.getIconHeight(), 150, 150, 4);
-		ships[2] = new Ship(2, "destroyer", 'H', 1, destroyerH.getIconWidth(), destroyerH.getIconHeight(), 250, 250, 3);
-		ships[3] = new Ship(3, "submarine", 'H', 1, submarineH.getIconWidth(), submarineH.getIconHeight(), 350, 350, 3);
-		ships[4] = new Ship(4, "patrolBoat", 'H', 1, patrolBoatH.getIconWidth(), patrolBoatH.getIconHeight(), 450, 450, 2);
-		ships[5] = new Ship(5, "aircraftCarrier", 'H', 2, aircraftCarrierH.getIconWidth(), aircraftCarrierH.getIconHeight(), 50, 50, 5);
-		ships[6] = new Ship(6, "battleship", 'H', 2, battleshipH.getIconWidth(), battleshipH.getIconHeight(), 150, 150, 4);
-		ships[7] = new Ship(7, "destroyer", 'H', 2, destroyerH.getIconWidth(), destroyerH.getIconHeight(), 250, 250, 3);
-		ships[8] = new Ship(8, "submarine", 'H', 2, submarineH.getIconWidth(), submarineH.getIconHeight(), 350, 350, 3);
-		ships[9] = new Ship(9, "patrolBoat", 'H', 2, patrolBoatH.getIconWidth(), patrolBoatH.getIconHeight(), 450, 450, 2);
+
+		for(int x = 0; x < ships.length; x++){
+			ranX = ranNum.nextInt(600);
+			ranY = ranNum.nextInt(600);
+			while(!placeShip(x, shipPlayer[x], shipWidth[x], shipHeight[x], ranX, ranY)){
+				ranX = ranNum.nextInt(600);
+				ranY = ranNum.nextInt(600);
+			}
+
+			ships[x] = new Ship(x, shipNames[x], 'H', shipPlayer[x], shipWidth[x], shipHeight[x], ranX, ranY, shipSize[x]);
+		}
 
 		for(int x = 0; x < ships.length; x++){
 			ships[x].setLocation(ships[x].returnXCord(), ships[x].returnYCord());
@@ -320,9 +324,38 @@ public class Battleship extends JFrame{
 			ships[x].setVisible(false);
 		}
 
-		//gameTimer.start();
-
 		repaint();
+	}
+
+	private boolean placeShip(int num, int player, int width, int height, int xCord, int yCord){
+		boolean placed = true;
+		int start;
+		if(player == 1)
+			start = 0;
+		else
+			start = 5;
+
+		if(num == 0 || num == 5){
+			if(xCord > 600 - width){
+				placed = false;
+			}
+			if(yCord > 600 - height){
+				placed = false;
+			}
+		}else{
+			for(int x = start; x < num; x++){
+				if(ships[x].checkBounds(xCord, yCord)){
+					placed = false;
+				}
+				if(xCord > 600 - width){
+					placed = false;
+				}
+				if(yCord > 600 - height){
+					placed = false;
+				}
+			}
+		}
+		return placed;
 	}
 
 	private void player1turn(){

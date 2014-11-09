@@ -104,14 +104,10 @@ public class Ship extends JLabel
     
     public boolean checkBounds(int x, int y){
     	boolean result = false;
-    	//System.out.print("xCord: " + xCord + " - x: " +  x + " - xCord + width: ");
-    	//System.out.println(xCord + width);
-    	//System.out.print("yCord: " + yCord + " - y: " +  y + " - yCord + height: ");
-    	//System.out.println(yCord + height);
+    	
     	if(xCord < x && x < xCord + width && yCord < y && y < yCord + height){
     		result = true;
     	}
-    	//System.out.println("result: " + result);
     	
     	return result;
     }
