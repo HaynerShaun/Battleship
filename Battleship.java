@@ -9,6 +9,10 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * The Battleship class builds a simple and small game mode selection screen
+ * @author Hayner
+ */
 public class Battleship extends JFrame{
 
 	private int FRAME_WIDTH = 300;
@@ -20,6 +24,9 @@ public class Battleship extends JFrame{
 	private JButton pvc = new JButton("Player vs. Computer");
 	private JButton cvc = new JButton("Computer vs. Computer");
 	
+	/**
+	 * Battle is the constructor for the Battleship class
+	 */
 	public Battleship(){
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setLayout(null);
@@ -52,11 +59,20 @@ public class Battleship extends JFrame{
 		super.setLocationRelativeTo(null);
 	}
 	
+	/**
+	 * the close method sets visibility of the game selection screen to false after a game mode is selected
+	 */
 	private void close(){
 		super.setVisible(false);
 	}
 	
+	/**
+	 * buttonListener is a private inner class that creates an instance of another class based on game mode the user selects
+	 */
 	private class buttonListener implements ActionListener{
+		/**
+		 * the actionPerformed method runs code based on the button selected by the user
+		 */
 		public void actionPerformed(ActionEvent e){
 			if(e.getSource() == pvp){
 				playerVplayer pvp = new playerVplayer();

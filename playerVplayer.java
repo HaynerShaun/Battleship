@@ -9,6 +9,9 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * playerVplayer class loads GUI and handles gameplay if the player vs player mode is selected
+ */
 public class playerVplayer extends JFrame{
 	private JLabel boardOne = new JLabel();
 	private JLabel boardTwo = new JLabel();
@@ -62,6 +65,9 @@ public class playerVplayer extends JFrame{
 	private int[] shipSize = {5,4,3,3,2,5,4,3,3,2};
 	private int ranX = 0, ranY = 0;
 
+	/**
+	 * playerVplayer is the constructor for the playerVplayer class
+	 */
 	public playerVplayer(){
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setLayout(null);
@@ -70,32 +76,7 @@ public class playerVplayer extends JFrame{
 		boardTwo.setLayout(null);
 		buttonArea.setLayout(null);
 
-		buttonArea.setSize(FRAME_WIDTH, 50);
-		buttonArea.setLocation(0, 0);
-
-		boardOne.setSize(600,600);
-		boardOne.setLocation(0,buttonArea.getHeight());
-
-		boardTwo.setSize(600,600);
-		boardTwo.setLocation(boardOne.getWidth() + 10,buttonArea.getHeight());
-
-		boardOne.setIcon(background);
-		boardTwo.setIcon(background);
-
-		newGame.setSize(100,20);
-		newGame.setLocation(10,10);
-
-		doneTurn.setSize(150,20);
-		doneTurn.setLocation(FRAME_WIDTH / 2 - doneTurn.getWidth() / 2 ,newGame.getY());
-		doneTurn.setVisible(false);
-
-		p1shipLabel.setSize(150,15);
-		p1shipLabel.setLocation((boardOne.getWidth() / 2) - (p1shipLabel.getWidth() / 2),buttonArea.getHeight() - p1shipLabel.getHeight() - 5);
-		p1shipLabel.setVisible(false);
-
-		p2shipLabel.setSize(150,15);
-		p2shipLabel.setLocation(boardTwo.getX() + (boardTwo.getWidth() / 2) - (p2shipLabel.getWidth() / 2),buttonArea.getHeight() - p2shipLabel.getHeight() - 5);
-		p2shipLabel.setVisible(false);
+		setLocations();
 
 		super.add(buttonArea);
 		super.add(boardOne);
@@ -114,13 +95,51 @@ public class playerVplayer extends JFrame{
 		super.setLocationRelativeTo(null);
 	}
 
+	/**
+	 * setLocations method set the sizes and locations of items on the GUI
+	 */
+	private void setLocations(){
+		buttonArea.setSize(FRAME_WIDTH, 50);
+		buttonArea.setLocation(0, 0);
+		boardOne.setSize(600,600);
+		boardOne.setLocation(0,buttonArea.getHeight());
+		boardTwo.setSize(600,600);
+		boardTwo.setLocation(boardOne.getWidth() + 10,buttonArea.getHeight());
+		boardOne.setIcon(background);
+		boardTwo.setIcon(background);
+		newGame.setSize(100,20);
+		newGame.setLocation(10,10);
+		doneTurn.setSize(150,20);
+		doneTurn.setLocation(FRAME_WIDTH / 2 - doneTurn.getWidth() / 2 ,newGame.getY());
+		doneTurn.setVisible(false);
+		p1shipLabel.setSize(150,15);
+		p1shipLabel.setLocation((boardOne.getWidth() / 2) - (p1shipLabel.getWidth() / 2),buttonArea.getHeight() - p1shipLabel.getHeight() - 5);
+		p1shipLabel.setVisible(false);
+		p2shipLabel.setSize(150,15);
+		p2shipLabel.setLocation(boardTwo.getX() + (boardTwo.getWidth() / 2) - (p2shipLabel.getWidth() / 2),buttonArea.getHeight() - p2shipLabel.getHeight() - 5);
+		p2shipLabel.setVisible(false);
+	}
+
+	/**
+	 * newGameListener is a private inner class to handle the pressing of the new game button
+	 */
 	private class newGameListener implements ActionListener{
+		/**
+		 * actionPerformed method handles setting up a new game of battleship
+		 */
 		public void actionPerformed(ActionEvent e){
 			startGame();
 		}
 	}
 
+	/**
+	 * board1Attack is a private inner class to handle attacking player 1 ships by clicking where you want to attack on the board
+	 */
 	private class board1Attack implements MouseListener{
+		/**
+		 * mouseClicked method makes sure a shot wasn't already taken in that location and adds a new hit or miss icon 
+		 * depending on layout of ships.
+		 */
 		public void mouseClicked(MouseEvent e){
 			if(e.getButton() == 1){
 				boolean found = false;
@@ -134,8 +153,6 @@ public class playerVplayer extends JFrame{
 				if(!found)
 				{
 					player2shots.add(new Shot(e.getX(),e.getY()));
-					player2shots.get(player2shotCount).setLocation(player2shots.get(player2shotCount).returnXCord(),player2shots.get(player2shotCount).returnYCord());
-					player2shots.get(player2shotCount).setSize(player2shots.get(player2shotCount).returnWidth(),player2shots.get(player2shotCount).returnHeight());
 					boardOne.add(player2shots.get(player2shotCount));
 
 					boardOne.setComponentZOrder(player2shots.get(player2shotCount), 0);
@@ -152,12 +169,12 @@ public class playerVplayer extends JFrame{
 							}
 						}
 					}
-					player2shots.get(player2shotCount).setIcon(player2shots.get(player2shotCount).getPic());
 
 					player2shotCount++;
+					boardOne.removeMouseListener(p2AttackHandler);
+					buttonArea.requestFocus();
 				}
 			}
-			boardOne.removeMouseListener(p2AttackHandler);
 			repaint();
 			e.consume();
 		}
@@ -166,8 +183,15 @@ public class playerVplayer extends JFrame{
 		public void mouseEntered(MouseEvent e){e.consume();}
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
-	
+
+	/**
+	 * board2Attack is a private inner class to handle attacking player 2 ships by clicking where you want to attack on the board
+	 */
 	private class board2Attack implements MouseListener{
+		/**
+		 * mouseClicked method makes sure a shot wasn't already taken in that location and adds a new hit or miss icon 
+		 * depending on layout of ships.
+		 */
 		public void mouseClicked(MouseEvent e){
 			if(e.getButton() == 1){
 				boolean found = false;
@@ -181,8 +205,6 @@ public class playerVplayer extends JFrame{
 				if(!found)
 				{
 					player1shots.add(new Shot(e.getX(),e.getY()));
-					player1shots.get(player1shotCount).setLocation(player1shots.get(player1shotCount).returnXCord(),player1shots.get(player1shotCount).returnYCord());
-					player1shots.get(player1shotCount).setSize(player1shots.get(player1shotCount).returnWidth(),player1shots.get(player1shotCount).returnHeight());
 					boardTwo.add(player1shots.get(player1shotCount));
 
 					boardTwo.setComponentZOrder(player1shots.get(player1shotCount), 0);
@@ -199,12 +221,12 @@ public class playerVplayer extends JFrame{
 							}
 						}
 					}
-					player1shots.get(player1shotCount).setIcon(player1shots.get(player1shotCount).getPic());
 
 					player1shotCount++;
+					boardTwo.removeMouseListener(p1AttackHandler);
+					buttonArea.requestFocus();
 				}
 			}
-			boardTwo.removeMouseListener(p1AttackHandler);
 			repaint();
 			e.consume();
 		}
@@ -214,6 +236,9 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * doneTurn is a private inner class to handle the pressing of the done turn button
+	 */
 	private class doneTurn implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 
@@ -273,6 +298,9 @@ public class playerVplayer extends JFrame{
 		}
 	}
 
+	/**
+	 * startGame method sets visibilities, initializes variables, then creates and places the ships randomly around the boards
+	 */
 	private void startGame(){
 
 		newGame.setVisible(false);
@@ -300,8 +328,6 @@ public class playerVplayer extends JFrame{
 		}
 
 		for(int x = 0; x < ships.length; x++){
-			ships[x].setLocation(ships[x].returnXCord(), ships[x].returnYCord());
-			ships[x].setSize(ships[x].returnWidth(), ships[x].returnHeight());
 			if(ships[x].getPlayer() == 1){
 				boardOne.add(ships[x]);
 			}
@@ -310,16 +336,24 @@ public class playerVplayer extends JFrame{
 			}
 			ships[x].setVisible(false);
 		}
+		buttonArea.requestFocus();
 
 		repaint();
 	}
 
+	/**
+	 * placeShip method creates a new ship at the random location provided by the xCord and yCord
+	 * @param num
+	 * @param xCord
+	 * @param yCord
+	 * @return true if the ship was placed without a problem, false if the ship's placement isn't allowed
+	 */
 	private boolean placeShip(int num, int xCord, int yCord){
 		boolean placed = true;
 		int x;
 		ships[num] = new Ship(num, shipNames[num], 'H', shipPlayer[num], shipWidth[num], shipHeight[num], xCord, yCord, shipSize[num]);
 
-		if(xCord + ships[num].returnWidth() < boardOne.getWidth() && yCord + ships[num].returnHeight() < boardOne.getHeight()){
+		if(xCord + ships[num].getWidth() < boardOne.getWidth() && yCord + ships[num].getHeight() < boardOne.getHeight()){
 			if(num <= 4){
 				x = 0;
 				while(x <= 4 && placed == true && x <= num){
@@ -347,6 +381,9 @@ public class playerVplayer extends JFrame{
 		return placed;
 	}
 
+	/**
+	 * allows the player 1 to take their turn by attacking player 2's board
+	 */
 	private void player1turn(){
 		for(int x = 0; x < ships.length; x++){
 			ships[x].setVisible(false);
@@ -359,9 +396,12 @@ public class playerVplayer extends JFrame{
 		}
 		doneTurn.setVisible(true);
 		repaint();
-		buttonArea.requestFocus();
+		boardOne.requestFocus();
 	}
 
+	/**
+	 * allows the player 2 to take their turn by attacking player 1's board
+	 */
 	private void player2turn(){
 		for(int x = 0; x < ships.length; x++){
 			ships[x].setVisible(false);
@@ -374,9 +414,13 @@ public class playerVplayer extends JFrame{
 		}
 		doneTurn.setVisible(true);
 		repaint();
-		buttonArea.requestFocus();
+		boardTwo.requestFocus();
 	}
 
+	/**
+	 * player1setup allows the player to see where their ships were randomly placed, and allows them to right click the 
+	 * ship to change the orientation of the ship, if allowed
+	 */
 	private void player1setup(){
 		for(int x = 0; x < ships.length; x++){
 			ships[x].setVisible(false);
@@ -389,8 +433,13 @@ public class playerVplayer extends JFrame{
 		}
 		doneTurn.setVisible(true);
 		repaint();
+		boardOne.requestFocus();
 	}
 
+	/**
+	 * player2setup allows the player to see where their ships were randomly placed, and allows them to right click the 
+	 * ship to change the orientation of the ship, if allowed
+	 */
 	private void player2setup(){
 		for(int x = 0; x < ships.length; x++){
 			ships[x].setVisible(false);
@@ -403,14 +452,20 @@ public class playerVplayer extends JFrame{
 		}
 		doneTurn.setVisible(true);
 		repaint();
+		boardTwo.requestFocus();
 	}
 
+	/**
+	 * changeOrientation method checks to see if the ship's orientation can be legally made at the player's request
+	 * change is made if allowed, nothing visible happens if not allowed
+	 * @param ship
+	 * @param e
+	 */
 	private void changeOrientation(int ship, MouseEvent e){
 		boolean intersects = false;
 		ships[ship].changeOrientation();
-		ships[ship].setSize(ships[ship].returnWidth(), ships[ship].returnHeight());
 
-		if(ships[ship].returnXCord() + ships[ship].returnWidth() > boardOne.getWidth() || ships[ship].returnYCord() + ships[ship].returnHeight() > boardTwo.getHeight()){
+		if(ships[ship].getX() + ships[ship].getWidth() > boardOne.getWidth() || ships[ship].getY() + ships[ship].getHeight() > boardTwo.getHeight()){
 			intersects = true;
 		}
 		if(!intersects){
@@ -434,15 +489,18 @@ public class playerVplayer extends JFrame{
 		}
 		if(intersects){
 			ships[ship].changeOrientation();
-			ships[ship].setSize(ships[ship].returnWidth(), ships[ship].returnHeight());
 		}
 		repaint();
 	}
 
-	private class ship0Listener implements MouseListener, MouseMotionListener{
-		boolean check = false;
-		int c1=0;
-		int c2=0;
+	/**
+	 * ship0Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
+	private class ship0Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 0;
 
@@ -451,35 +509,22 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardOne.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
-		public void mouseReleased(MouseEvent e){
-			check = false;
-			e.consume();
-		}
+		public void mouseReleased(MouseEvent e){e.consume();}
 		public void mouseEntered(MouseEvent e){e.consume();}
 		public void mouseExited(MouseEvent e){e.consume();}
-		public void mouseDragged(MouseEvent e){ 
-
-			System.out.println("Made it into mouseDragged");
-			Component C=e.getComponent();
-			System.out.println(C);
-
-			if(check==false){check=true;Point p=new  
-					Point(e.getPoint());c1=p.x;c2=p.y;}
-
-			Point z=new Point(e.getPoint());
-			Point q=new Point(C.getLocation());  
-
-			C.setBounds(q.x+(z.x-c1),q.y+(z.y-c2),C.getSize().  
-					width,C.getSize().height);  
-		} 
-		public void mouseMoved(MouseEvent e)
-		{
-		}
 	}
 
+	/**
+	 * ship1Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship1Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 1;
 
@@ -488,6 +533,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardOne.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -495,7 +541,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship2Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship2Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 2;
 
@@ -504,6 +557,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardOne.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -511,7 +565,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship3Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship3Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 3;
 
@@ -520,6 +581,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardOne.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -527,7 +589,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship4Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship4Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 4;
 
@@ -536,6 +605,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardOne.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -543,7 +613,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship5Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship5Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 5;
 
@@ -552,6 +629,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardTwo.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -559,7 +637,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship6Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship6Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 6;
 
@@ -568,6 +653,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardTwo.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -575,7 +661,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship7Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship7Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 7;
 
@@ -584,6 +677,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardTwo.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -591,7 +685,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship8Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship8Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 8;
 
@@ -600,6 +701,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardTwo.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}
@@ -607,7 +709,14 @@ public class playerVplayer extends JFrame{
 		public void mouseExited(MouseEvent e){e.consume();}
 	}
 
+	/**
+	 * ship9Listener listens for the player to right click their ship indicating that they want to change it's orientation
+	 */
 	private class ship9Listener implements MouseListener{
+		/**
+		 * mouseClicked method sets the value of a ship variable to the ship's number, then sends 
+		 * the ship variable, and the mouse click's x,y coordinate
+		 */
 		public void mouseClicked(MouseEvent e){
 			int ship = 9;
 
@@ -616,6 +725,7 @@ public class playerVplayer extends JFrame{
 			}
 
 			e.consume();
+			boardTwo.requestFocus();
 		}
 		public void mousePressed(MouseEvent e){e.consume();}
 		public void mouseReleased(MouseEvent e){e.consume();}

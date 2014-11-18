@@ -9,6 +9,9 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * computerVcomputer class loads GUI and handles gameplay if the computer vs computer mode is selected
+ */
 public class computerVcomputer extends JFrame{
 	private JLabel boardOne = new JLabel();
 	private JLabel boardTwo = new JLabel();
@@ -53,6 +56,9 @@ public class computerVcomputer extends JFrame{
 	private int[] shipSize = {5,4,3,3,2,5,4,3,3,2};
 	private int ranX = 0, ranY = 0;
 
+	/**
+	 * computerVcomputer is the constructor for the computerVcomputer class
+	 */
 	public computerVcomputer(){
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setLayout(null);
@@ -60,30 +66,9 @@ public class computerVcomputer extends JFrame{
 		boardOne.setLayout(null);
 		boardTwo.setLayout(null);
 		buttonArea.setLayout(null);
-
-		buttonArea.setSize(FRAME_WIDTH, 50);
-		buttonArea.setLocation(0, 0);
-
-		boardOne.setSize(600,600);
-		boardOne.setLocation(0,buttonArea.getHeight());
-
-		boardTwo.setSize(600,600);
-		boardTwo.setLocation(boardOne.getWidth() + 10,buttonArea.getHeight());
-
-		boardOne.setIcon(background);
-		boardTwo.setIcon(background);
-
-		newGame.setSize(100,20);
-		newGame.setLocation(5,5);
-
-		cp1shipLabel.setSize(200,15);
-		cp1shipLabel.setLocation((boardOne.getWidth() / 2) - (cp1shipLabel.getWidth() / 2),buttonArea.getHeight() - cp1shipLabel.getHeight() - 5);
-		cp1shipLabel.setVisible(false);
-
-		cp2shipLabel.setSize(200,15);
-		cp2shipLabel.setLocation(boardTwo.getX() + (boardTwo.getWidth() / 2) - (cp2shipLabel.getWidth() / 2),buttonArea.getHeight() - cp2shipLabel.getHeight() - 5);
-		cp2shipLabel.setVisible(false);
-
+		
+		setLocations();
+		
 		gameTimer = new Timer(10, new TimerListener());
 
 		super.add(buttonArea);
@@ -100,7 +85,32 @@ public class computerVcomputer extends JFrame{
 		super.setVisible(true);
 		super.setLocationRelativeTo(null);
 	}
+	
+	/**
+	 * setLocations method set the sizes and locations of items on the GUI
+	 */
+	private void setLocations(){
+		buttonArea.setSize(FRAME_WIDTH, 50);
+		buttonArea.setLocation(0, 0);
+		boardOne.setSize(600,600);
+		boardOne.setLocation(0,buttonArea.getHeight());
+		boardTwo.setSize(600,600);
+		boardTwo.setLocation(boardOne.getWidth() + 10,buttonArea.getHeight());
+		boardOne.setIcon(background);
+		boardTwo.setIcon(background);
+		newGame.setSize(100,20);
+		newGame.setLocation(5,5);
+		cp1shipLabel.setSize(200,15);
+		cp1shipLabel.setLocation((boardOne.getWidth() / 2) - (cp1shipLabel.getWidth() / 2),buttonArea.getHeight() - cp1shipLabel.getHeight() - 5);
+		cp1shipLabel.setVisible(false);
+		cp2shipLabel.setSize(200,15);
+		cp2shipLabel.setLocation(boardTwo.getX() + (boardTwo.getWidth() / 2) - (cp2shipLabel.getWidth() / 2),buttonArea.getHeight() - cp2shipLabel.getHeight() - 5);
+		cp2shipLabel.setVisible(false);
+	}
 
+	/**
+	 * cp1PlaceShips method places computer player 1 ships
+	 */
 	private void cp1PlaceShips(){
 		int start = 0;
 		int stop = 4;
@@ -116,10 +126,10 @@ public class computerVcomputer extends JFrame{
 				placed = true;
 
 				ships[x] = new Ship(x, shipNames[x], 'H', shipPlayer[x], shipWidth[x], shipHeight[x], ranX, ranY, shipSize[x]);
-				ships[x].setLocation(ships[x].returnXCord(), ships[x].returnYCord());
-				ships[x].setSize(ships[x].returnWidth(), ships[x].returnHeight());
+				ships[x].setLocation(ships[x].getX(), ships[x].getY());
+				ships[x].setSize(ships[x].getWidth(), ships[x].getHeight());
 
-				if(ships[x].returnXCord() + ships[x].returnWidth() < boardOne.getWidth() && ships[x].returnYCord() + ships[x].returnHeight() < boardOne.getHeight()){
+				if(ships[x].getX() + ships[x].getWidth() < boardOne.getWidth() && ships[x].getY() + ships[x].getHeight() < boardOne.getHeight()){
 					for(int y = start; y < x; y++){
 						if(ships[x].getBounds().intersects(ships[y].getBounds())){
 							placed = false;
@@ -129,16 +139,16 @@ public class computerVcomputer extends JFrame{
 					placed = false;
 				}
 			}
-
 			boardOne.add(ships[x]);
 		}
 	}
 
+	/**
+	 * cp2PlaceShips method places computer player 2 ships
+	 */
 	private void cp2PlaceShips(){
-		int start = 5;
-		int stop = 9;
+		int start = 5, stop = 9, orientation;
 		boolean placed;
-		int orientation;
 
 		for(int x = start; x <= stop; x++){
 			placed = false;
@@ -151,14 +161,14 @@ public class computerVcomputer extends JFrame{
 				placed = true;
 
 				ships[x] = new Ship(x, shipNames[x], 'H', shipPlayer[x], shipWidth[x], shipHeight[x], ranX, ranY, shipSize[x]);
-				ships[x].setLocation(ships[x].returnXCord(), ships[x].returnYCord());
-				ships[x].setSize(ships[x].returnWidth(), ships[x].returnHeight());
+				ships[x].setLocation(ships[x].getX(), ships[x].getY());
+				ships[x].setSize(ships[x].getWidth(), ships[x].getHeight());
 
 				if(orientation == 1){
 					changeOrientation(x);
 				}
 
-				if(ships[x].returnXCord() + ships[x].returnWidth() < boardTwo.getWidth() && ships[x].returnYCord() + ships[x].returnHeight() < boardTwo.getHeight()){
+				if(ships[x].getX() + ships[x].getWidth() < boardTwo.getWidth() && ships[x].getY() + ships[x].getHeight() < boardTwo.getHeight()){
 					for(int y = start; y < x; y++){
 						if(ships[x].getBounds().intersects(ships[y].getBounds())){
 							placed = false;
@@ -167,12 +177,14 @@ public class computerVcomputer extends JFrame{
 				}else{
 					placed = false;
 				}
-
 			}
 			boardTwo.add(ships[x]);
 		}
 	}
 
+	/**
+	 * cp1turn method attacks for computer player 1
+	 */
 	private void cp1turn(){
 		boolean attacked = false;
 		while(!attacked){
@@ -181,10 +193,7 @@ public class computerVcomputer extends JFrame{
 
 			if(cp1Attacks[ranX][ranY] == false){
 				cp1Shots.add(new Shot(ranX * 20,ranY * 20));
-				cp1Shots.get(cp1ShotCount).setLocation(cp1Shots.get(cp1ShotCount).returnXCord(),cp1Shots.get(cp1ShotCount).returnYCord());
-				cp1Shots.get(cp1ShotCount).setSize(cp1Shots.get(cp1ShotCount).returnWidth(),cp1Shots.get(cp1ShotCount).returnHeight());
 				boardTwo.add(cp1Shots.get(cp1ShotCount));
-
 				boardTwo.setComponentZOrder(cp1Shots.get(cp1ShotCount), 0);
 
 				for(int x = 0; x < ships.length; x++){
@@ -199,17 +208,17 @@ public class computerVcomputer extends JFrame{
 						}
 					}
 				}
-				cp1Shots.get(cp1ShotCount).setIcon(cp1Shots.get(cp1ShotCount).getPic());
-
 				cp1ShotCount++;
 				attacked = true;
 				cp1Attacks[ranX][ranY] = true;
 			}
 		}
-
 		repaint();
 	}
 
+	/**
+	 * cp2turn method attacks for computer player 2
+	 */
 	private void cp2turn(){
 		boolean attacked = false;
 		while(!attacked){
@@ -218,8 +227,6 @@ public class computerVcomputer extends JFrame{
 
 			if(cp2Attacks[ranX][ranY] == false){
 				cp2Shots.add(new Shot(ranX * 20,ranY * 20));
-				cp2Shots.get(cp2ShotCount).setLocation(cp2Shots.get(cp2ShotCount).returnXCord(),cp2Shots.get(cp2ShotCount).returnYCord());
-				cp2Shots.get(cp2ShotCount).setSize(cp2Shots.get(cp2ShotCount).returnWidth(),cp2Shots.get(cp2ShotCount).returnHeight());
 				boardOne.add(cp2Shots.get(cp2ShotCount));
 
 				boardOne.setComponentZOrder(cp2Shots.get(cp2ShotCount), 0);
@@ -236,19 +243,18 @@ public class computerVcomputer extends JFrame{
 						}
 					}
 				}
-				cp2Shots.get(cp2ShotCount).setIcon(cp2Shots.get(cp2ShotCount).getPic());
-
 				cp2ShotCount++;
 				attacked = true;
 				cp2Attacks[ranX][ranY] = true;
 			}
 		}
-
 		repaint();
 	}
 
+	/**
+	 * startGame method sets visibilities, initializes variables, calls other methods to place ships, then starts the gameTimer
+	 */
 	private void startGame(){
-
 		newGame.setVisible(false);
 		cp1shipLabel.setVisible(true);
 		cp2shipLabel.setVisible(true);
@@ -272,18 +278,20 @@ public class computerVcomputer extends JFrame{
 				cp2Attacks[x][y] = false;
 			}
 		}
-
 		gameTimer.start();
-
 		repaint();
 	}
 
+	/**
+	 * changeOrientation method checks to see if the ship's orientation can be legally made at the player's request
+	 * change is made if allowed, nothing visible happens if not allowed
+	 * @param ship
+	 */
 	private void changeOrientation(int ship){
 		boolean intersects = false;
 		ships[ship].changeOrientation();
-		ships[ship].setSize(ships[ship].returnWidth(), ships[ship].returnHeight());
 
-		if(ships[ship].returnXCord() + ships[ship].returnWidth() > boardOne.getWidth() || ships[ship].returnYCord() + ships[ship].returnHeight() > boardTwo.getHeight()){
+		if(ships[ship].getX() + ships[ship].getWidth() > boardOne.getWidth() || ships[ship].getY() + ships[ship].getHeight() > boardTwo.getHeight()){
 			intersects = true;
 		}
 		if(!intersects){
@@ -307,12 +315,17 @@ public class computerVcomputer extends JFrame{
 		}
 		if(intersects){
 			ships[ship].changeOrientation();
-			ships[ship].setSize(ships[ship].returnWidth(), ships[ship].returnHeight());
 		}
 		repaint();
 	}
 
+	/**
+	 * TimerListener is a private inner class for the gameTimer
+	 */
 	private class TimerListener implements ActionListener{
+		/**
+		 * actionPerformed method calls the computer player 1 and 2 attack methods
+		 */
 		public void actionPerformed(ActionEvent e){
 			
 			if(count % 2 == 0){
@@ -334,7 +347,13 @@ public class computerVcomputer extends JFrame{
 		}
 	}
 
+	/**
+	 * newGameListener is a private inner class to listen for the newGame button to be pressed
+	 */
 	private class newGameListener implements ActionListener{
+		/**
+		 * actionPerformed method calls the startGame method
+		 */
 		public void actionPerformed(ActionEvent e){
 			startGame();
 		}
