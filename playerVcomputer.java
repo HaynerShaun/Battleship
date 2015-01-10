@@ -198,6 +198,7 @@ public class playerVcomputer extends JFrame{
 				}
 			}
 			boardTwo.add(ships[x]);
+			ships[x].setVisible(false);
 		}
 	}
 
